@@ -21,18 +21,29 @@ app.post('/upload', (req,res) =>{
       
         const highlightDifferences = (obj1, obj2) => {
    
-          for (const key in { ...obj1, ...obj2 }) {
- 
-            if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
-              highlightDifferences(obj1[key], obj2[key]);
-            } else {
-
-              if (obj1[key] !== obj2[key]) {
-                obj1[key] = `<b>${obj1[key]}</b>`;
-                obj2[key] = `<b>${obj2[key]}</b>`;
-              }
+            for (const key in { ...obj1, ...obj2 }) {
+                if (obj1[key] === undefined) {
+                    obj1[key] = typeof obj2[key] === 'object'
+                        ? JSON.parse(JSON.stringify(obj2[key]))  // Deep copy object
+                        : `<b>${obj2[key]}</b>`;
+                } 
+                else if (obj2[key] === undefined) {
+                    obj2[key] = typeof obj1[key] === 'object'
+                        ? JSON.parse(JSON.stringify(obj1[key]))  // Deep copy object
+                        : `<b>${obj1[key]}</b>`;
+                } 
+                else if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+                    highlightDifferences(obj1[key], obj2[key]); // Recursively compare nested objects
+                } 
+                else {
+                    if (obj1[key] !== obj2[key]) {
+                        obj1[key] = `<b>${obj1[key]}</b>`;
+                        obj2[key] = `<b>${obj2[key]}</b>`;
+                    }
+                }
             }
-          }
+            
+            
         };
       
         highlightDifferences(json1, json2);
