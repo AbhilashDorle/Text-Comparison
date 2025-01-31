@@ -29,12 +29,17 @@ function App() {
     }
   }
 
+  const handleTextChange = (event, setFileContent) => {
+    setFileContent(event.target.value)
+  }
+
   const handleUpload = async () => {
     if(!fileContent1 || !fileContent2){
       console.log("Please select a file to upload")
       return;
     }
-
+    
+    console.log(JSON.stringify(fileContent1))
 
     try {
       const response = await fetch("http://localhost:5000/upload", {
@@ -83,6 +88,7 @@ function App() {
             <textarea
               className='text-area'
               value={fileContent1}
+              onChange={(e) => handleTextChange(e, setFileContent1)} 
               placeholder = "Enter Text">
             </textarea>
             
@@ -99,6 +105,7 @@ function App() {
             <textarea 
               className='text-area'
               value={fileContent2}
+              onChange={(e) => handleTextChange(e, setFileContent2)} 
               placeholder = "Enter Text">
             </textarea>
 
